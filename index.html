@@ -7,8 +7,6 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: rgb(95, 95, 95);
-            color: white;
         }
 
         h1, h2 {
@@ -31,7 +29,7 @@
         .unit-list, #incident-list {
             min-height: 100px;
             padding: 10px;
-            background-color: #929292;
+            background-color: #f9f9f9;
             border-radius: 5px;
         }
 
@@ -100,6 +98,28 @@
             padding: 2px 6px;
             border-radius: 3px;
         }
+
+        #roepnummer-plan {
+            margin-top: 30px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        #roepnummer-plan table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #roepnummer-plan th, #roepnummer-plan td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #roepnummer-plan th {
+            background-color: #f2f2f2;
+        }
     </style>
 </head>
 <body>
@@ -114,16 +134,16 @@
     <!-- Lijsten van statussen -->
     <div class="statuses">
         <div class="status" id="available" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h2>Status 1 (Beschikbaar)</h2>
+            <h2>Beschikbaar (status 1)</h2>
             <div class="unit-list" id="available-units"></div>
         </div>
         <div class="status" id="on-duty" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h2>Status 4 (niet Beschikbaar)</h2>
+            <h2>Niet Beschikbaar (status 4)
+            </h2>
             <div class="unit-list" id="on-duty-units"></div>
         </div>
         <div class="status" id="busy" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h2>Status 6 (eigen melding)
-            </h2>
+            <h2>Eigen melding</h2>
             <div class="unit-list" id="busy-units"></div>
         </div>
     </div>
@@ -136,6 +156,177 @@
             <button onclick="addIncident()">Melding toevoegen</button>
         </div>
         <div id="incident-list"></div>
+    </div>
+
+    <!-- Sectie voor roepnummerplan -->
+    <div id="roepnummer-plan">
+        <h2>Roepnummerplan</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Roepnummers LSPD</th>
+                    <th>Functie</th>
+                    <th>Bijzonderheden</th>
+                    <th>Roepnummers Algemeen</th>
+                    <th>Functie</th>
+                    <th>Bijzonderheden</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>21.01-25</td>
+                    <td>Noodhulp solo</td>
+                    <td>n.v.t</td>
+                    <td>20.01-25</td>
+                    <td>SAHP</td>
+                    <td>n.v.t</td>
+                </tr>
+                <tr>
+                    <td>21.25-34</td>
+                    <td>Noodhulp duo</td>
+                    <td>n.v.t</td>
+                    <td>20.26-29</td>
+                    <td>SAHP Motor</td>
+                    <td>n.v.t</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>20.30-39</td>
+                    <td>SAHP Unmarked</td>
+                    <td>n.v.t</td>
+                </tr>
+                <tr>
+                    <td>21.35</td>
+                    <td>Coach Studenten</td>
+                    <td>Coach met student</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>21.36-44</td>
+                    <td>Studenten</td>
+                    <td>Coach of studenten</td>
+                    <td>20.91-92</td>
+                    <td>Watch commander</td>
+                    <td>LSPD</td>
+                </tr>
+                <tr>
+                    <td>21.45-50</td>
+                    <td>Onopvallend</td>
+                    <td>Onopvallende eenheid</td>
+                    <td>20.93-94</td>
+                    <td>Watch commander</td>
+                    <td>BCSO</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>20.95</td>
+                    <td>Command</td>
+                    <td>Gehele district</td>
+                </tr>
+                <tr>
+                    <td>21.51-60</td>
+                    <td>Criminal Investigation Department (CID)</td>
+                    <td>Detective</td>
+                    <td>N662PD</td>
+                    <td>Air support</td>
+                    <td>Piloot en navigator</td>
+                </tr>
+                <tr>
+                    <td>21.61-64</td>
+                    <td>Supervisor</td>
+                    <td>n.v.t</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>21.65-69</td>
+                    <td>Motor</td>
+                    <td>Motoragent</td>
+                    <td>22.01-25</td>
+                    <td>Noodhulp solo</td>
+                    <td>n.v.t</td>
+                </tr>
+                <tr>
+                    <td>21.70-75</td>
+                    <td>K9-Unit</td>
+                    <td>Hondengeleider</td>
+                    <td>22.25-34</td>
+                    <td>Noodhulp duo</td>
+                    <td>n.v.t</td>
+                </tr>
+                <tr>
+                    <td>21.76-89</td>
+                    <td>Project/demo/evenement/overig</td>
+                    <td>n.v.t</td>
+                    <td>22.35</td>
+                    <td>Coach Studenten</td>
+                    <td>Coach met student</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>22.36-44</td>
+                    <td>Studenten</td>
+                    <td>Coach of studenten</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>22.45-50</td>
+                    <td>Onopvallend</td>
+                    <td>Onopvallende eenheid</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>22.51-60</td>
+                    <td>Criminal Investigation Department (CID)</td>
+                    <td>Detective</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>22.61-64</td>
+                    <td>Supervisor</td>
+                    <td>n.v.t</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>22.65-69</td>
+                    <td>Motor</td>
+                    <td>Motoragent</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>22.70-75</td>
+                    <td>K9-Unit</td>
+                    <td>Hondengeleider</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>22.76-89</td>
+                    <td>Project/demo/evenement/overig</td>
+                    <td>n.v.t</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <script>
@@ -158,14 +349,14 @@
                 // Voeg een dragstart event toe
                 unitDiv.ondragstart = drag;
 
-                // Voeg een verwijderknop toe aan de eenheid
+                // Voeg een verwijderknop toe
                 const deleteButton = document.createElement('button');
+                deleteButton.textContent = '×';
                 deleteButton.classList.add('delete-unit');
-                deleteButton.textContent = 'X';
                 deleteButton.onclick = () => unitDiv.remove();
+                unitDiv.appendChild(deleteButton);
 
                 unitDiv.textContent = unitName;
-                unitDiv.appendChild(deleteButton);
 
                 // Voeg de eenheid toe aan de "Beschikbaar" status
                 document.getElementById('available-units').appendChild(unitDiv);
@@ -241,12 +432,12 @@
                 saveButton.onclick = () => saveIncidentAsTxt(incidentDiv);
                 incidentDiv.appendChild(saveButton);
 
-                // Voeg een verwijderknop toe aan de melding
-                const deleteIncidentButton = document.createElement('button');
-                deleteIncidentButton.classList.add('delete-incident');
-                deleteIncidentButton.textContent = 'X';
-                deleteIncidentButton.onclick = () => incidentDiv.remove();
-                incidentDiv.appendChild(deleteIncidentButton);
+                // Voeg de knop toe om een melding te verwijderen
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = '×';
+                deleteButton.classList.add('delete-incident');
+                deleteButton.onclick = () => incidentDiv.remove();
+                incidentDiv.appendChild(deleteButton);
 
                 document.getElementById('incident-list').appendChild(incidentDiv);
                 document.getElementById('incident-description').value = '';
