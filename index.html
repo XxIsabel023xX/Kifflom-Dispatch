@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meldkamer Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgb(95, 95, 95);
+            color: white;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        .statuses {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .status {
+            width: 30%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .unit-list, #incident-list {
+            min-height: 100px;
+            padding: 10px;
+            background-color: #929292;
+            border-radius: 5px;
+        }
+
+        .unit {
+            padding: 8px;
+            margin: 5px;
+            background-color: #eee;
+            cursor: move;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .delete-unit {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            cursor: pointer;
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        #incident-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        #incident-list {
+            margin-top: 20px;
+        }
+
+        .incident {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .notities {
+            margin-top: 10px;
+        }
+
+        .note {
+            margin: 5px 0;
+            padding: 5px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .add-note-section {
+            margin-top: 10px;
+        }
+
+        .delete-incident {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            cursor: pointer;
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Meldkamer Dashboard</h1>
+
+    <!-- Sectie voor het toevoegen van eenheden -->
+    <div id="add-unit">
+        <input type="text" id="unit-name" placeholder="Eenheid naam">
+        <button onclick="addUnit()">Eenheid toevoegen</button>
+    </div>
+
+    <!-- Lijsten van statussen -->
+    <div class="statuses">
+        <div class="status" id="available" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h2>Status 1 (Beschikbaar)</h2>
+            <div class="unit-list" id="available-units"></div>
+        </div>
+        <div class="status" id="on-duty" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h2>Status 4 (niet Beschikbaar)</h2>
+            <div class="unit-list" id="on-duty-units"></div>
+        </div>
+        <div class="status" id="busy" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h2>Status 6 (eigen melding)
+            </h2>
+            <div class="unit-list" id="busy-units"></div>
+        </div>
+    </div>
+
+    <!-- Sectie voor meldingen -->
+    <div id="incident-section">
+        <h2>Meldingen</h2>
+        <div>
+            <input type="text" id="incident-description" placeholder="Melding beschrijving">
+            <button onclick="addIncident()">Melding toevoegen</button>
+        </div>
+        <div id="incident-list"></div>
+    </div>
+
+    <script>
+        // Unieke ID-generator voor eenheden
+        let unitIdCounter = 0;
+
+        // Functie om een nieuwe eenheid toe te voegen
+        function addUnit() {
+            const unitName = document.getElementById('unit-name').value;
+            if (unitName) {
+                // Maak een nieuwe div voor de eenheid
+                const unitDiv = document.createElement('div');
+                unitDiv.classList.add('unit');
+                unitDiv.draggable = true;
+
+                // Genereer een unieke ID voor de eenheid
+                const unitId = 'unit-' + unitIdCounter++;
+                unitDiv.id = unitId;
+
+                // Voeg een dragstart event toe
+                unitDiv.ondragstart = drag;
+
+                // Voeg een verwijderknop toe aan de eenheid
+                const deleteButton = document.createElement('button');
+                deleteButton.classList.add('delete-unit');
+                deleteButton.textContent = 'X';
+                deleteButton.onclick = () => unitDiv.remove();
+
+                unitDiv.textContent = unitName;
+                unitDiv.appendChild(deleteButton);
+
+                // Voeg de eenheid toe aan de "Beschikbaar" status
+                document.getElementById('available-units').appendChild(unitDiv);
+                document.getElementById('unit-name').value = '';
+            }
+        }
+
+        // Functie om het slepen van een eenheid toe te staan
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        // Functie om het slepen van een eenheid te starten
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+        }
+
+        // Functie om een eenheid neer te zetten in een nieuwe status
+        function drop(event) {
+            event.preventDefault();
+            const unitId = event.dataTransfer.getData("text");
+            const unitElement = document.getElementById(unitId);
+
+            // Zorg ervoor dat we het kunnen droppen in de juiste container
+            if (event.target.classList.contains('unit-list')) {
+                event.target.appendChild(unitElement);
+            }
+        }
+
+        // Functie om meldingen aan te maken en een notitie toe te voegen
+        function addIncident() {
+            const incidentDescription = document.getElementById('incident-description').value;
+            if (incidentDescription) {
+                const incidentDiv = document.createElement('div');
+                incidentDiv.classList.add('incident');
+                incidentDiv.textContent = incidentDescription;
+
+                const assignUnitsDiv = document.createElement('div');
+                assignUnitsDiv.classList.add('assign-units');
+                assignUnitsDiv.textContent = "Sleep eenheden hier";
+                assignUnitsDiv.ondrop = drop;
+                assignUnitsDiv.ondragover = allowDrop;
+                assignUnitsDiv.classList.add('unit-list');
+
+                incidentDiv.appendChild(assignUnitsDiv);
+
+                // Sectie voor het toevoegen van notities
+                const addNoteSection = document.createElement('div');
+                addNoteSection.classList.add('add-note-section');
+
+                const noteInput = document.createElement('input');
+                noteInput.type = 'text';
+                noteInput.placeholder = 'Voeg een notitie toe';
+                noteInput.classList.add('note-input');
+
+                const addNoteButton = document.createElement('button');
+                addNoteButton.textContent = 'Notitie toevoegen';
+                addNoteButton.onclick = () => addNote(incidentDiv, noteInput.value);
+
+                addNoteSection.appendChild(noteInput);
+                addNoteSection.appendChild(addNoteButton);
+
+                incidentDiv.appendChild(addNoteSection);
+
+                // Lijst voor notities
+                const notesDiv = document.createElement('div');
+                notesDiv.classList.add('notities');
+                incidentDiv.appendChild(notesDiv);
+
+                // Voeg de knop toe om een melding op te slaan als .txt bestand
+                const saveButton = document.createElement('button');
+                saveButton.textContent = 'Uitdraai maken';
+                saveButton.onclick = () => saveIncidentAsTxt(incidentDiv);
+                incidentDiv.appendChild(saveButton);
+
+                // Voeg een verwijderknop toe aan de melding
+                const deleteIncidentButton = document.createElement('button');
+                deleteIncidentButton.classList.add('delete-incident');
+                deleteIncidentButton.textContent = 'X';
+                deleteIncidentButton.onclick = () => incidentDiv.remove();
+                incidentDiv.appendChild(deleteIncidentButton);
+
+                document.getElementById('incident-list').appendChild(incidentDiv);
+                document.getElementById('incident-description').value = '';
+            }
+        }
+
+        // Functie om notities aan een melding toe te voegen
+        function addNote(incidentDiv, noteText) {
+            if (noteText) {
+                const notesDiv = incidentDiv.querySelector('.notities');
+                
+                const noteDiv = document.createElement('div');
+                noteDiv.classList.add('note');
+                noteDiv.textContent = noteText;
+
+                notesDiv.appendChild(noteDiv);
+            }
+        }
+
+        // Functie om een incident op te slaan als .txt bestand
+        function saveIncidentAsTxt(incidentDiv) {
+            const incidentDescription = incidentDiv.firstChild.textContent;
+            const unitList = Array.from(incidentDiv.querySelector('.assign-units').children)
+                                .map(unit => unit.textContent).join(', ');
+            const notes = Array.from(incidentDiv.querySelectorAll('.note'))
+                                .map(note => note.textContent).join('\n');
+
+            const incidentData = `Melding: ${incidentDescription}\nEenheden: ${unitList}\nNotities:\n${notes}`;
+
+            // Maak een blob met de data
+            const blob = new Blob([incidentData], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+
+            // Maak een tijdelijke link voor downloaden
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'incident-uitdraai.txt';
+            a.click();
+
+            // Ruim de blob op
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
