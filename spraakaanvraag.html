@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meldkamer Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        #unit-section, #status-buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .request-list {
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .request-item {
+            border-bottom: 1px solid #eaeaea;
+            padding: 10px 0;
+        }
+        .request-item:last-child {
+            border-bottom: none;
+        }
+        small {
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <h1>Meldkamer Dashboard</h1>
+
+    <div id="unit-section">
+        <input type="text" id="unit-callsign" placeholder="Roepnummer" />
+        <button id="set-unit" onclick="setUnit()">Instellen Eenheid</button>
+    </div>
+
+    <div id="status-buttons" style="display: none;">
+        <button onclick="requestSpeech()">Aanvraag Spraak</button>
+        <button onclick="requestUrgentSpeech()">Aanvraag Spraak Spoed</button>
+    </div>
+
+    <div id="spraakaanvraag-section">
+        <h2>Spraakaanvragen</h2>
+        <div id="spraakaanvraag-list" class="request-list">
+            <!-- Spraakaanvragen worden hier dynamisch geladen -->
+        </div>
+    </div>
+
+    <audio id="beep-sound" src="beep.wav" preload="auto"></audio>
+
+    <script>
+        let currentUnit = '';
+
+        function setUnit() {
+            const callsign = document.getElementById('unit-callsign').value;
+            if (callsign) {
+                currentUnit = callsign;
+                document.getElementById('status-buttons').style.display = 'block';
+                document.getElementById('unit-section').style.display = 'none';
+            }
+        }
+
+        function playSound() {
+            const beepSound = document.getElementById('beep-sound');
+            beepSound.currentTime = 0; // Reset naar het begin
+            beepSound.play();
+        }
+
+        function requestSpeech() {
+            if (currentUnit) {
+                const aanvraag = {
+                    unitName: currentUnit,
+                    omschrijving: "Normale spraakaanvraag",
+                    timestamp: new Date().toLocaleString()
+                };
+                saveRequest(aanvraag);
+                playSound(); // Speel geluid af
+            }
+        }
+
+        function requestUrgentSpeech() {
+            if (currentUnit) {
+                const aanvraag = {
+                    unitName: currentUnit,
+                    omschrijving: "Spoed spraakaanvraag",
+                    timestamp: new Date().toLocaleString()
+                };
+                saveRequest(aanvraag);
+                playSound(); // Speel geluid af
+            }
+        }
+
+        function saveRequest(aanvraag) {
+            let aanvragen = JSON.parse(localStorage.getItem('spraakaanvragen')) || [];
+            aanvragen.push(aanvraag);
+            localStorage.setItem('spraakaanvragen', JSON.stringify(aanvragen));
+            loadSpraakAanvragen();
+            alert('Aanvraag succesvol ingediend!');
+        }
+
+        function loadSpraakAanvragen() {
+            const aanvragenDiv = document.getElementById('spraakaanvraag-list');
+            aanvragenDiv.innerHTML = '';
+
+            const aanvragen = JSON.parse(localStorage.getItem('spraakaanvragen')) || [];
+            aanvragen.forEach(aanvraag => {
+                const aanvraagDiv = document.createElement('div');
+                aanvraagDiv.className = 'request-item';
+                aanvraagDiv.innerHTML = `<strong>${aanvraag.unitName}</strong><br>${aanvraag.omschrijving}<br><small>${aanvraag.timestamp}</small>`;
+                aanvragenDiv.appendChild(aanvraagDiv);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadSpraakAanvragen);
+    </script>
+</body>
+</html>
